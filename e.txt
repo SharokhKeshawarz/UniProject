@@ -1,0 +1,267 @@
+def fact(n):
+    if n == 0:
+        return 1
+    else:
+        return n * fact(n-1)
+fact(10)
+ └── 10 * fact(9)
+      └── 9 * fact(8)
+           └── 8 * fact(7)
+                └── ...
+                     └── 1 * fact(0)
+                          └── return 1
+
+
+Exercice 2 — Nombre d’appels pour fact(5)
+
+Chaque appel fait un sous-appel jusqu’à fact(0).
+
+➡️ fact(5) → fact(4) → fact(3) → fact(2) → fact(1) → fact(0)
+✅ 6 appels au total
+
+Exercice 3 — Nombre d’appels pour fact(-3)
+
+Il n’y a pas de condition d’arrêt pour n < 0, donc la récursion ne s’arrête jamais
+→ Récursion infinie (jusqu’à l’erreur RecursionError).
+
+Exercice 4
+
+def f(n):
+    if n == 0:
+        return 0
+    else:
+        return 3 + f(n-1)
+
+
+f(4)
+→ f(3)
+→ f(2)
+→ f(1)
+→ f(0)
+✅ 5 appels au total
+
+➤ f(-2) :
+
+Aucune condition pour les valeurs négatives ⇒ récursion infinie.
+
+➤ Fonction équivalente non récursive :
+
+La fonction ajoute 3 à chaque appel ⇒ f(n) = 3n
+def f_iter(n):
+    return 3 * n
+
+
+Exercice 5
+
+def f(n):
+    if n > 0:
+        print(n)
+        f(n-1)
+
+➤ Appel f(4) :
+Affichage
+4
+3
+2
+1
+✅ Premier nombre affiché : 4
+✅ Dernier nombre affiché : 1
+
+Exercice 6
+
+def f(n):
+    if n > 0:
+        f(n-1)
+        print(n)
+
+
+➤ Appel f(4) :
+1
+2
+3
+4
+✅ Premier nombre affiché : 1
+✅ Dernier nombre affiché : 4
+
+
+Exercice 7
+def f(lst):
+    if lst == []:
+        return 0
+    else:
+        return 1 + f(lst[1:])
+
+➤ Appel f([5,6,7]) :
+f([5,6,7]) → f([6,7]) → f([7]) → f([]) → 0
+✅ 4 appels (1 par élément + 1 pour la liste vide)
+
+➤ Fonction équivalente :
+C’est la fonction len()
+def f(lst):
+    return len(lst)
+
+
+Exercice 8
+
+Tri récursif trier2() (type merge sort).
+
+➤ Liste de 16 éléments :
+
+Chaque appel coupe la liste en 2 jusqu’à des listes de taille 1 :
+N appels = 2n - 1
+
+Pour 16 éléments :
+2*16 - 1 = 31 appels
+➡️ Croissance : O(n log n)
+➡️ Plus rapide que le tri par insertion (O(n²)).
+
+1. Puissance
+def puissance(x, n):
+    if n == 0:
+        return 1
+    else:
+        return x * puissance(x, n-1)
+✅ puissance(2, 4) → 16
+
+2. Produit avec additions
+def produit(a, b):
+    if b == 0:
+        return 0
+    else:
+        return a + produit(a, b-1)
+✅ produit(4, 3) → 12
+
+3. PGCD (algorithme d’Euclide)
+Exemple : pgcd(60, 100)
+pgcd(60, 100)
+→ pgcd(100, 60)
+→ pgcd(60, 40)
+→ pgcd(40, 20)
+→ pgcd(20, 0)
+= 20
+✅ Résultat : 20
+
+4. Combinaison (triangle de Pascal)
+def C(n, p):
+    if p == 0 or p == n:
+        return 1
+    else:
+        return C(n-1, p) + C(n-1, p-1)
+✅ C(5, 2) → 10
+
+
+5. Recherche dichotomique
+def recherche(val, lst):
+    if lst == []:
+        return None
+    mid = len(lst)//2
+    if lst[mid] == val:
+        return mid
+    elif val < lst[mid]:
+        return recherche(val, lst[:mid])
+    else:
+        res = recherche(val, lst[mid+1:])
+        return None if res is None else mid + 1 + res
+✅ recherche(7, [1,3,5,7,9]) → 3
+
+6. Compter les occurrences
+def compte_occurrences(val, lst):
+    def find_first(lst, val, debut=0):
+        if not lst:
+            return None
+        mid = len(lst)//2
+        if lst[mid] == val:
+            if mid == 0 or lst[mid-1] < val:
+                return debut + mid
+            else:
+                return find_first(lst[:mid], val, debut)
+        elif val < lst[mid]:
+            return find_first(lst[:mid], val, debut)
+        else:
+            return find_first(lst[mid+1:], val, debut + mid + 1)
+
+    def find_last(lst, val, debut=0):
+        if not lst:
+            return None
+        mid = len(lst)//2
+        if lst[mid] == val:
+            if mid == len(lst)-1 or lst[mid+1] > val:
+                return debut + mid
+            else:
+                return find_last(lst[mid+1:], val, debut + mid + 1)
+        elif val < lst[mid]:
+            return find_last(lst[:mid], val, debut)
+        else:
+            return find_last(lst[mid+1:], val, debut + mid + 1)
+
+    first = find_first(lst, val)
+    last = find_last(lst, val)
+    return 0 if first is None else last - first + 1
+✅ compte_occurrences(3, [1,2,3,3,3,4,5]) → 3
+
+7. Trois versions de Fibonacci
+(a) Version naïve :
+def fib_naif(n):
+    if n <= 1:
+        return n
+    else:
+        return fib_naif(n-1) + fib_naif(n-2)
+
+(b) Version couple :
+def fib_couple(n):
+    if n == 0:
+        return (0, 1)
+    a, b = fib_couple(n-1)
+    return (b, a+b)
+
+def fib1(n):
+    return fib_couple(n)[0]
+
+(c) Version inversée :
+def fib_rec(n, a, b):
+    if n == 0:
+        return a
+    else:
+        return fib_rec(n-1, b, a+b)
+
+def fib2(n):
+    return fib_rec(n, 0, 1)
+✅ fib2(6) → 8
+
+8. Conversion Romain → Décimal
+conversion = [
+    (1000,"M"), (500,"D"), (100,"C"),
+    (50,"L"), (10,"X"), (5,"V"), (1,"I")
+]
+
+def r2d_c(c):
+    for (val, char) in conversion:
+        if char == c:
+            return val
+    return 0
+
+def Rom2Dec(rom):
+    if len(rom) == 0:
+        return 0
+    if len(rom) == 1:
+        return r2d_c(rom)
+    first = r2d_c(rom[0])
+    second = r2d_c(rom[1])
+    if first < second:
+        return Rom2Dec(rom[1:]) - first
+    else:
+        return first + Rom2Dec(rom[1:])
+
+✅ Rom2Dec("MCMXCIX") → 1999
+
+
+9. Tour de Hanoï
+def hanoi(n, source, auxiliaire, destination):
+    if n == 1:
+        print(f"Déplacer le disque 1 de {source} vers {destination}")
+    else:
+        hanoi(n-1, source, destination, auxiliaire)
+        print(f"Déplacer le disque {n} de {source} vers {destination}")
+        hanoi(n-1, auxiliaire, source, destination)
+✅ hanoi(3, 'A', 'B', 'C') affiche toutes les étapes du déplacement.
+
